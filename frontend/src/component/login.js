@@ -1,10 +1,63 @@
 // src/Components/Login.js
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineTwitter } from "react-icons/ai";
 import { BiLogoFacebook } from "react-icons/bi";
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 
-const login = () => {
+const Login = () => {
+  const navigate=useNavigate()
+  const [email,setEmail]=useState("")
+  const [password,setPassword]=useState("")
+  const [eerror,setError]=useState("")
+  const [perror,setPerror]=useState('')
+  const handleClick=async (e)=>{
+    e.preventDefault()
+    setError('');
+    setPerror('');
+    if (!email.trim()) {
+      setError('Email is required');
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setError('Invalid email format');
+      return;
+    }
+    if (!password.trim()) {
+      setPerror('Password is required');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/loginUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+      if (!response) {
+        throw new Error('Failed to sign in');
+      }
+      const data = await response.json();
+      if (data.success === 'admin') {
+        alert('Admin Login');
+        navigate('/admin')
+      }
+      if (data.success === 'success') {
+        navigate('/home')
+      }
+      if (data.error === 'Invalid username') {
+        setError("Invalied Email")
+      } 
+    }catch(error){
+      alert(error.message)
+    }
+  }
   return (
     <section className="h-screen flex flex-col md:flex-row justify-center space-y-10 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
       <div className="md:w-1/3 max-w-sm">
@@ -42,14 +95,24 @@ const login = () => {
         </div>
         <input
           className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
-          type="text"
+          type="email" 
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          name="password"
+          id="email"
           placeholder="Email Address"
         />
+        <p className="text-red-600 hover:underline hover:underline-offset-4">{eerror}</p>
         <input
           className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
-          type="password"
+          type="password" 
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          name="password"
+          id="password"
           placeholder="Password"
         />
+        <p className="text-red-600 hover:underline hover:underline-offset-4">{perror}</p>
         <div className="mt-4 flex justify-between font-semibold text-sm">
           <label className="flex text-slate-500 hover:text-slate-600 cursor-pointer">
             <input className="mr-1" type="checkbox" />
@@ -66,17 +129,17 @@ const login = () => {
           <button
             className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
             type="submit"
-          >
+            onClick={handleClick}>
             Login
           </button>
         </div>
         <div className="mt-4 font-semibold text-sm text-slate-500 text-center md:text-left">
-          Don&apos;t have an account?{" "}
-          <Link to="/signup" className="text-red-600 hover:underline hover:underline-offset-4">Register</Link>
+          Don&apos;t have an account? {""}
+          <Link to="/signup" className="text-red-600 hover:underline hover:underline-offset-4"> Register</Link>
         </div>
       </div>
     </section>
   );
 };
 
-export default login;
+export default Login;

@@ -19,6 +19,7 @@ import {
     IconButton,
     Tooltip,
 } from "@material-tailwind/react";
+import { useEffect, useState } from "react";
 
 const TABS = [
     {
@@ -86,12 +87,30 @@ const TABLE_ROWS = [
 ];
 
 export function Admin() {
+    const [userdata, setUserData] = useState('');
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/getUser');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+                const datas = await response.json();
+                setUserData(datas);
+                console.log(datas);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
     return (
         <Card className="h-full w-full p-5">
             <CardHeader floated={false} shadow={false} className="rounded-none">
                 <div className="mb-8 flex items-center justify-between gap-8">
                     <div>
-                        
+
                     </div>
                     <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                         <Button variant="outlined" size="sm">
@@ -113,7 +132,7 @@ export function Admin() {
                         </TabsHeader>
                     </Tabs>
                     <div className="w-full md:w-72">
-                        <Input placeholder="Search"/>
+                        <Input placeholder="Search" />
                     </div>
                 </div>
             </CardHeader>
@@ -141,6 +160,76 @@ export function Admin() {
                         </tr>
                     </thead>
                     <tbody>
+                        {userdata.map((userData) => (
+                            <tr key={userData._id}>
+                                <td>{userData.name}</td>
+                                <td>{userData.email}</td>
+                                <td>{userData.role}</td>
+                                {/* Add more table cells as needed for other user properties */}
+                            </tr>
+                        ))}
+                    </tbody>
+                    {/* <tbody>
+                        
+                        {userdata.map((userData, index) => {
+                            const { name, email, role, username, dob, gender, address } = userData;
+                            const isLast = index === userdata.length - 1;
+                            const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+
+                            return (
+                                <tr key={userData._id}>
+                                    <td className={classes}>
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex flex-col">
+                                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                                    {name}
+                                                </Typography>
+                                                <Typography variant="small" color="blue-gray" className="font-normal opacity-70">
+                                                    {email}
+                                                </Typography>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className={classes}>
+                                        <div className="flex flex-col">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {role}
+                                            </Typography>
+                                            <Typography variant="small" color="blue-gray" className="font-normal opacity-70">
+                                                {username}
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                    <td className={classes}>
+                                        <div className="flex flex-col">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {dob}
+                                            </Typography>
+                                            <Typography variant="small" color="blue-gray" className="font-normal opacity-70">
+                                                {gender}
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                    <td className={classes}>
+                                        <div className="flex flex-col">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {address}
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                    <td className={classes}>
+                                        <Tooltip content="Edit User">
+                                            <IconButton variant="text">
+                                                <PencilIcon className="h-4 w-4" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody> */}
+
+                    {/* <tbody>
                         {TABLE_ROWS.map(
                             ({ img, name, email, job, org, online, date }, index) => {
                                 const isLast = index === TABLE_ROWS.length - 1;
@@ -218,12 +307,12 @@ export function Admin() {
                                     </tr>
                                 );
                             },
-                        )}
-                    </tbody>
+                        )}*/}
+                    {/* </tbody>  */}
                 </table>
             </CardBody>
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                
+
             </CardFooter>
         </Card>
     );
