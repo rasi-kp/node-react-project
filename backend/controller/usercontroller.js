@@ -1,0 +1,20 @@
+module.exports={
+    createUser:async(req,res)=>{
+        console.log(req.body);
+    },
+    loginUser:async(req,res)=>{
+        console.log(req.body);
+    },
+    updateUser:async(req,res)=>{
+        console.log(req.body);
+    },
+    logoutUser:async(req,res)=>{
+        console.log(req.body);
+    },
+    getUser:async(req,res)=>{
+
+    },
+    updateProfile:async(req,res)=>{
+        console.log(req.body);
+    },
+}
