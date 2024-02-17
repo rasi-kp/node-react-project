@@ -1,93 +1,21 @@
-import {
-    MagnifyingGlassIcon,
-    ChevronUpDownIcon,
-} from "@heroicons/react/24/outline";
+
+import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
-import {
-    Card,
-    CardHeader,
-    Input,
-    Typography,
-    Button,
-    CardBody,
-    Chip,
-    CardFooter,
-    Tabs,
-    TabsHeader,
-    Tab,
-    Avatar,
-    IconButton,
-    Tooltip,
-} from "@material-tailwind/react";
+import { Card, CardHeader, Input, Typography, Button, CardBody, CardFooter, Tabs, Avatar, IconButton, Tooltip, } from "@material-tailwind/react";
+
 import { useEffect, useState } from "react";
-
-const TABS = [
-    {
-        label: "All",
-        value: "all",
-    },
-    {
-        label: "Monitored",
-        value: "monitored",
-    },
-    {
-        label: "Unmonitored",
-        value: "unmonitored",
-    },
-];
-
+import AddUser from './AddUser';
+import Edit from "./edituser";
+const img = require('../images/profile.png')
 const TABLE_HEAD = ["Name", "Email", "Username", "Address", "Action"];
 
-const TABLE_ROWS = [
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-        name: "John Michael",
-        email: "john@creative-tim.com",
-        job: "Manager",
-        org: "Organization",
-        online: true,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-        name: "Alexa Liras",
-        email: "alexa@creative-tim.com",
-        job: "Programator",
-        org: "Developer",
-        online: false,
-        date: "23/04/18",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-        name: "Laurent Perrier",
-        email: "laurent@creative-tim.com",
-        job: "Executive",
-        org: "Projects",
-        online: false,
-        date: "19/09/17",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
-        name: "Michael Levi",
-        email: "michael@creative-tim.com",
-        job: "Programator",
-        org: "Developer",
-        online: true,
-        date: "24/12/08",
-    },
-    {
-        img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
-        name: "Richard Gran",
-        email: "richard@creative-tim.com",
-        job: "Manager",
-        org: "Executive",
-        online: false,
-        date: "04/10/21",
-    },
-];
-
 export function Admin() {
-    const [userdata, setUserData] = useState('');
+    const [menuOpen, setMenuOpen] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpenedit, setIsModalOpenedit] = useState(false);
+    const [userdata, setUserData] = useState([]);
+    const [selectedEmail, setSelectedEmail] = useState('');
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -96,48 +24,66 @@ export function Admin() {
                     throw new Error('Failed to fetch user data');
                 }
                 const datas = await response.json();
-                setUserData(datas);
-                console.log(datas);
+                setUserData(datas.data);
             } catch (error) {
                 console.error(error);
             }
         };
-
         fetchData();
     }, []);
+    const handleEdit =(email) => {
+        setSelectedEmail(email)
+        setMenuOpen(prevState => ({
+            ...prevState,
+            [email]: !prevState[email] // Toggle the menu state for the clicked row
+        }));
+    };
+    const addUser = () => {
+        setIsModalOpen(true);
+    }
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+    const editUser = () => {
+        setIsModalOpenedit(true);
+    }
+    const closeModaluser = () => {
+        setIsModalOpenedit(false);
+    };
+    const handleMenuOption = (option) => {
+        if (option === 'edit') {
+            console.log('Edit:', selectedEmail);
+            editUser()
+            
+        } else if (option === 'delete') {
+            // Handle delete logic here
+            console.log('Delete:', selectedEmail);
+        }
+        setMenuOpen(prevState => ({ ...prevState, [selectedEmail]: false }));
+    };
     return (
         <Card className="h-full w-full p-5">
             <CardHeader floated={false} shadow={false} className="rounded-none">
                 <div className="mb-8 flex items-center justify-between gap-8">
                     <div>
-
                     </div>
                     <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                        <Button variant="outlined" size="sm">
-                            view all
-                        </Button>
-                        <Button className="flex items-center gap-3" size="sm">
+                        <Button className="flex items-center gap-3" size="sm" onClick={addUser}>
                             <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add User
                         </Button>
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                     <Tabs value="all" className="w-full md:w-max">
-                        <TabsHeader>
-                            {TABS.map(({ label, value }) => (
-                                <Tab key={value} value={value}>
-                                    &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                                </Tab>
-                            ))}
-                        </TabsHeader>
+
                     </Tabs>
-                    <div className="w-full md:w-72">
+                    <div className="w-56 md:w-72">
                         <Input placeholder="Search" />
                     </div>
                 </div>
             </CardHeader>
             <CardBody className="overflow-scroll px-0">
-                <table className="mt-4 w-full min-w-max table-auto text-left">
+                <table className="ml-5 mt-4 w-full min-w-max table-auto text-left">
                     <thead>
                         <tr>
                             {TABLE_HEAD.map((head, index) => (
@@ -159,54 +105,36 @@ export function Admin() {
                             ))}
                         </tr>
                     </thead>
+
                     <tbody>
-                        {userdata.map((userData) => (
-                            <tr key={userData._id}>
-                                <td>{userData.name}</td>
-                                <td>{userData.email}</td>
-                                <td>{userData.role}</td>
-                                {/* Add more table cells as needed for other user properties */}
-                            </tr>
-                        ))}
-                    </tbody>
-                    {/* <tbody>
-                        
+
                         {userdata.map((userData, index) => {
-                            const { name, email, role, username, dob, gender, address } = userData;
+                            const { name, email, username, address } = userData;
                             const isLast = index === userdata.length - 1;
                             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-
                             return (
                                 <tr key={userData._id}>
                                     <td className={classes}>
                                         <div className="flex items-center gap-3">
+                                            <Avatar src={img} size="sm" />
                                             <div className="flex flex-col">
                                                 <Typography variant="small" color="blue-gray" className="font-normal">
                                                     {name}
-                                                </Typography>
-                                                <Typography variant="small" color="blue-gray" className="font-normal opacity-70">
-                                                    {email}
                                                 </Typography>
                                             </div>
                                         </div>
                                     </td>
                                     <td className={classes}>
                                         <div className="flex flex-col">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {role}
-                                            </Typography>
-                                            <Typography variant="small" color="blue-gray" className="font-normal opacity-70">
-                                                {username}
+                                            <Typography variant="small" color="blue-gray" className="font-normal ">
+                                                {email}
                                             </Typography>
                                         </div>
                                     </td>
                                     <td className={classes}>
                                         <div className="flex flex-col">
                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {dob}
-                                            </Typography>
-                                            <Typography variant="small" color="blue-gray" className="font-normal opacity-70">
-                                                {gender}
+                                                {username}
                                             </Typography>
                                         </div>
                                     </td>
@@ -219,101 +147,41 @@ export function Admin() {
                                     </td>
                                     <td className={classes}>
                                         <Tooltip content="Edit User">
-                                            <IconButton variant="text">
+                                            <Button variant="text" onClick={() => handleEdit(email)}>
                                                 <PencilIcon className="h-4 w-4" />
-                                            </IconButton>
+                                            </Button>
                                         </Tooltip>
                                     </td>
+                                    {menuOpen[email] && (
+                                        <div className="absolute right-0 mt-14 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                            <div className="py-1"
+                                                role="menu"
+                                                aria-orientation="vertical"
+                                                aria-labelledby="options-menu">
+                                                <button
+                                                    onClick={() => handleMenuOption('edit')}
+                                                    className="block px-4 py-2 text-sm text-gray-700 w-full text-left hover:bg-gray-100"
+                                                    role="menuitem">Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleMenuOption('delete')}
+                                                    className="block px-4 py-2 text-sm text-gray-700 w-full text-left hover:bg-gray-100"
+                                                    role="menuitem">Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </tr>
                             );
                         })}
-                    </tbody> */}
-
-                    {/* <tbody>
-                        {TABLE_ROWS.map(
-                            ({ img, name, email, job, org, online, date }, index) => {
-                                const isLast = index === TABLE_ROWS.length - 1;
-                                const classes = isLast
-                                    ? "p-4"
-                                    : "p-4 border-b border-blue-gray-50";
-
-                                return (
-                                    <tr key={name}>
-                                        <td className={classes}>
-                                            <div className="flex items-center gap-3">
-                                                <Avatar src={img} alt={name} size="sm" />
-                                                <div className="flex flex-col">
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-normal"
-                                                    >
-                                                        {name}
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-normal opacity-70"
-                                                    >
-                                                        {email}
-                                                    </Typography>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className={classes}>
-                                            <div className="flex flex-col">
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-normal"
-                                                >
-                                                    {job}
-                                                </Typography>
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-normal opacity-70"
-                                                >
-                                                    {org}
-                                                </Typography>
-                                            </div>
-                                        </td>
-                                        <td className={classes}>
-                                            <div className="w-max">
-                                                <Chip
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    value={online ? "online" : "offline"}
-                                                    color={online ? "green" : "blue-gray"}
-                                                />
-                                            </div>
-                                        </td>
-                                        <td className={classes}>
-                                            <Typography
-                                                variant="small"
-                                                color="blue-gray"
-                                                className="font-normal"
-                                            >
-                                                {date}
-                                            </Typography>
-                                        </td>
-                                        <td className={classes}>
-                                            <Tooltip content="Edit User">
-                                                <IconButton variant="text">
-                                                    <PencilIcon className="h-4 w-4" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </td>
-                                    </tr>
-                                );
-                            },
-                        )}*/}
-                    {/* </tbody>  */}
+                    </tbody>
                 </table>
             </CardBody>
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-
             </CardFooter>
+            {isModalOpen && <AddUser closeModal={closeModal} />}
+            
+            {isModalOpenedit && <Edit closeModaluser={closeModaluser} selectedEmail={selectedEmail} />}
         </Card>
     );
 }

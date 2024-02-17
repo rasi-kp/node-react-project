@@ -4,6 +4,8 @@ import { AiOutlineTwitter } from "react-icons/ai";
 import { BiLogoFacebook } from "react-icons/bi";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const navigate=useNavigate()
@@ -16,6 +18,9 @@ const Login = () => {
     setError('');
     setPerror('');
     if (!email.trim()) {
+      
+      toast.success(email + " is empty");
+      toast("sett")
       setError('Email is required');
       return;
     }
@@ -138,7 +143,9 @@ const Login = () => {
           <Link to="/signup" className="text-red-600 hover:underline hover:underline-offset-4"> Register</Link>
         </div>
       </div>
+      <ToastContainer />
     </section>
+    
   );
 };
 
