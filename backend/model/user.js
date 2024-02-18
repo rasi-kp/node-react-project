@@ -15,6 +15,8 @@ const signup = new mongoose.Schema({
     password: {
         type: String,
     },
+    address:String,
+    dob:String
 })
 const signupdata = new mongoose.model("users", signup)
 

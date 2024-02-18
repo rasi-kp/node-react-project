@@ -30,8 +30,8 @@ export function Admin() {
             }
         };
         fetchData();
-    }, []);
-    const handleEdit =(email) => {
+    }, [isModalOpen, isModalOpenedit,deleteuser]);
+    const handleEdit = (email) => {
         setSelectedEmail(email)
         setMenuOpen(prevState => ({
             ...prevState,
@@ -50,17 +50,37 @@ export function Admin() {
     const closeModaluser = () => {
         setIsModalOpenedit(false);
     };
-    const handleMenuOption = (option) => {
-        if (option === 'edit') {
-            console.log('Edit:', selectedEmail);
-            editUser()
-            
-        } else if (option === 'delete') {
-            // Handle delete logic here
-            console.log('Delete:', selectedEmail);
+    const deleteuser = async (e) => {
+        const response = await fetch('http://localhost:5000/deleteUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: selectedEmail,
+            }),
+        });
+        if (!response) {
+            throw new Error('Failed to sign in');
         }
-        setMenuOpen(prevState => ({ ...prevState, [selectedEmail]: false }));
-    };
+        const data = await response.json();
+        if (data.user) {
+            // toast.success("User Creation Successfull")              
+        }
+        console.log('Delete:', selectedEmail);
+    }
+    const handleMenuOption = async (option) => {
+        if (option === 'edit') {
+            editUser()
+
+        } else if (option === 'delete') {
+            console.log('Delete:', selectedEmail);
+            deleteuser()
+        }
+    }
+
+    setMenuOpen(prevState => ({ ...prevState, [selectedEmail]: false }));
+
     return (
         <Card className="h-full w-full p-5">
             <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -164,7 +184,12 @@ export function Admin() {
                                                     role="menuitem">Edit
                                                 </button>
                                                 <button
-                                                    onClick={() => handleMenuOption('delete')}
+                                                    onClick={() => {
+                                                        const confirmDelete = window.confirm("Are you sure Delete ?");
+                                                        if (confirmDelete) {
+                                                            handleMenuOption('delete');
+                                                        }
+                                                    }}
                                                     className="block px-4 py-2 text-sm text-gray-700 w-full text-left hover:bg-gray-100"
                                                     role="menuitem">Delete
                                                 </button>
@@ -180,7 +205,7 @@ export function Admin() {
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
             </CardFooter>
             {isModalOpen && <AddUser closeModal={closeModal} />}
-            
+
             {isModalOpenedit && <Edit closeModaluser={closeModaluser} selectedEmail={selectedEmail} />}
         </Card>
     );

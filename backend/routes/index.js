@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 });
 router.post('/createUser',createUser)
 router.post('/loginUser',loginUser)
-router.post('/updateUser',updateUser)
+router.post('/editUser',updateUser)
 router.post('/logout',logoutUser)
 router.get('/getUser',getUser)
 router.get('/getUser/:id',getUserid)

@@ -12,7 +12,6 @@ module.exports={
           }
           else {
             const passwordmatch = await bcrypt.compare(req.body.password, usercheck.password)
-            console.log(passwordmatch);
             if (passwordmatch) {
               if (usercheck.role == 'admin') {
                 return res.json({ success: "admin" });
@@ -31,7 +30,6 @@ module.exports={
         }
       },
     createUser: async (req, res) => {
-        console.log(req.body);
         const datas = {
           role: "user",
           email: req.body.email,
@@ -55,9 +53,12 @@ module.exports={
       },
     updateUser:async(req,res)=>{
         console.log(req.body);
+        const result=await user.findOneAndUpdate({email:req.body.data.email},req.body.data)
+        return res.status(200).json({ user: "sucess" });
     },
     logoutUser:async(req,res)=>{
         console.log(req.body);
+        
     },
     getUser:async(req,res)=>{
         const data=await user.find({})
@@ -66,7 +67,6 @@ module.exports={
     getUserid:async(req,res)=>{
         const id=req.params.id
         const data=await user.findOne({email:id})
-        console.log(data);
         return res.status(200).json({ data:data });
     },
     updateProfile:async(req,res)=>{

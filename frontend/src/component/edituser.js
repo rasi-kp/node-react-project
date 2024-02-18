@@ -20,61 +20,23 @@ function AddUser({ closeModaluser ,selectedEmail}) {
       };
       fetchData();
   }, []);
-    const [email, setEmail] = useState("")
-    const [name, setName] = useState("")
-    const [password, setPassword] = useState("")
-    const [cpassword, setCpassword] = useState("")
-    const [eerror, setError] = useState("")
-    const [perror, setPerror] = useState('')
     const [nerror, setNerror] = useState("")
-    const [cerror, setCerror] = useState('')
     const [showModal, setShowModal] = React.useState(true);
     const adduser =async (e) => {
         e.preventDefault()
-    setError('');
-    setPerror('');
     setNerror('');
-    setCerror('');
-    if (!email.trim()) {
-      toast.error("Email is required")
-      setError('Email is required');
-      return;
-    }
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      setError('Invalid email format');
-      return;
-    }
-    if (!name.trim()) {
+    if (user.name.trim() === '') {
       setNerror('Name is required');
       return;
     }
-    if (!password.trim()) {
-      setPerror('Password is required');
-      return;
-    }
-    if (password.length < 6) {
-      setPerror('Password must be at least 6 characters');
-      return;
-    }
-    if (!cpassword.trim()) {
-      setCerror('Confirm Password is required');
-      return;
-    }
-    if (password !== cpassword) {
-      setCerror('Password does not match');
-      return;
-    }
     try {
-      const response = await fetch('http://localhost:5000/createUser', {
+      const response = await fetch('http://localhost:5000/editUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
-          name:name,
-          password: password,
+          data:user
         }),
       });
       if (!response) {
@@ -83,15 +45,9 @@ function AddUser({ closeModaluser ,selectedEmail}) {
       const data = await response.json();
       console.log(data);
       if (data.user) {
-        toast.success("User Creation Successfull")
-        setName('');
-        setEmail('');
-        setPassword('')
-        setCpassword('')
-      }
-      if (data.error === 'Email Already Exist') {
-        setError("Email Already Exist")
-        toast.error("Email Already Exist")
+        toast.success("Successfully Edit ")
+        // setShowModal(false)
+        closeModaluser(false)
       }
     } catch (error) {
       alert(error.message)
@@ -122,7 +78,7 @@ function AddUser({ closeModaluser ,selectedEmail}) {
                                     <input
                                         className="mt-2 mb-1 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded "
                                         type="text"
-                                        value={user.name }
+                                        value={user.name}
                                         onChange={e => setUserData({ ...user, name: e.target.value })}
                                         placeholder="Name"
                                         name="name"
@@ -138,7 +94,6 @@ function AddUser({ closeModaluser ,selectedEmail}) {
                                         name="email"
                                         readOnly
                                     />
-                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{eerror}</p>
                                     <p className="">Address :</p>
                                     <input
                                         className="mt-2 mb-1 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded "
@@ -148,7 +103,6 @@ function AddUser({ closeModaluser ,selectedEmail}) {
                                         placeholder="Name"
                                         name="name"
                                     />
-                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{nerror}</p>
                                     <p className="">DOB :</p>
                                     <input
                                         className="mt-2 mb-1 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded "
@@ -158,7 +112,6 @@ function AddUser({ closeModaluser ,selectedEmail}) {
                                         placeholder="Name"
                                         name="name"
                                     />
-                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{nerror}</p>
                                 </div>
                                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                     <button
