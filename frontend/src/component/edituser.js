@@ -4,11 +4,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function AddUser({ closeModaluser ,selectedEmail}) {
     // const navigate = useNavigate()
-    const [user, setUserData] = useState("");
+    const [user, setUserData] = useState('');
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const response = await fetch('http://localhost:5000/getUser/:selectedEmail');
+              const response = await fetch(`http://localhost:5000/getUser/${selectedEmail}`);
               if (!response.ok) {
                   throw new Error('Failed to fetch user data');
               }
@@ -107,7 +107,7 @@ function AddUser({ closeModaluser ,selectedEmail}) {
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                                     <h3 className="text-3xl font-semibold">
-                                        ADD USER
+                                        EDIT USER
                                     </h3>
                                     <button
                                         className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -118,46 +118,47 @@ function AddUser({ closeModaluser ,selectedEmail}) {
                                     </button>
                                 </div>
                                 <div className="relative p-6 flex-auto">
+                                <p className="">Name :</p>
                                     <input
-                                        className="mt-10 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
+                                        className="mt-2 mb-1 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded "
                                         type="text"
-                                        value={email}
-                                        onChange={e => setEmail(e.target.value)}
-                                        placeholder="Email Address"
-                                        name="email"
-                                    />
-                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{eerror}</p>
-                                    <input
-                                        className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
-                                        type="text"
-                                        value={name}
-                                        onChange={e => setName(e.target.value)}
+                                        value={user.name }
+                                        onChange={e => setUserData({ ...user, name: e.target.value })}
                                         placeholder="Name"
                                         name="name"
                                     />
                                     <p className="text-red-600 hover:underline hover:underline-offset-4">{nerror}</p>
+                                <p className="">Email :</p>
                                     <input
-                                        className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        name="password"
-                                        placeholder="Password"
+                                        className="mt-2 mb-1 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
+                                        type="text"
+                                        value={user.email}
+                                        // onChange={e => setUserData({ ...user, email: e.target.value })}
+                                        placeholder="Email Address"
+                                        name="email"
+                                        readOnly
                                     />
-                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{perror}</p>
+                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{eerror}</p>
+                                    <p className="">Address :</p>
                                     <input
-                                        className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
-                                        type="password"
-                                        value={cpassword}
-                                        onChange={(e) => setCpassword(e.target.value)}
-                                        name="cpassword"
-                                        placeholder="Confirm Password"
+                                        className="mt-2 mb-1 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded "
+                                        type="text"
+                                        value={user.address}
+                                        onChange={e => setUserData({ ...user, address: e.target.value })}
+                                        placeholder="Name"
+                                        name="name"
                                     />
-                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{cerror}</p>
-                                    <div className="mt-4 flex justify-between font-semibold text-sm">
-
-
-                                    </div>
+                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{nerror}</p>
+                                    <p className="">DOB :</p>
+                                    <input
+                                        className="mt-2 mb-1 text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded "
+                                        type="text"
+                                        value={user.dob}
+                                        onChange={e => setUserData({ ...user, dob: e.target.value })}
+                                        placeholder="Name"
+                                        name="name"
+                                    />
+                                    <p className="text-red-600 hover:underline hover:underline-offset-4">{nerror}</p>
                                 </div>
                                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                     <button

@@ -61,12 +61,11 @@ module.exports={
     },
     getUser:async(req,res)=>{
         const data=await user.find({})
-        // console.log(data);
         return res.status(200).json({ data:data });
     },
     getUserid:async(req,res)=>{
         const id=req.params.id
-        const data=await user.find({email:id})
+        const data=await user.findOne({email:id})
         console.log(data);
         return res.status(200).json({ data:data });
     },

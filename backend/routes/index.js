@@ -10,7 +10,7 @@ router.post('/loginUser',loginUser)
 router.post('/updateUser',updateUser)
 router.post('/logout',logoutUser)
 router.get('/getUser',getUser)
-router.get('/getUser:id',getUserid)
+router.get('/getUser/:id',getUserid)
 router.post('/updateProfile',updateProfile)
 
 module.exports = router;
