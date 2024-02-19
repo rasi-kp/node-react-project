@@ -8,7 +8,15 @@ function AddUser({ closeModaluser ,selectedEmail}) {
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const response = await fetch(`http://localhost:5000/getUser/${selectedEmail}`);
+              const token = localStorage.getItem('token');
+              const response = await fetch(`http://localhost:5000/getUser/${selectedEmail}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${token}`
+                    }
+                });
+              
               if (!response.ok) {
                   throw new Error('Failed to fetch user data');
               }
@@ -30,10 +38,12 @@ function AddUser({ closeModaluser ,selectedEmail}) {
       return;
     }
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5000/editUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `${token}`
         },
         body: JSON.stringify({
           data:user

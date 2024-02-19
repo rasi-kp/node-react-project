@@ -1,41 +1,82 @@
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
-import { Card, CardHeader, Input, Typography, Button, CardBody, CardFooter, Tabs, Avatar, IconButton, Tooltip, } from "@material-tailwind/react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Card, CardHeader, Input, Typography, Button, CardBody, CardFooter, Tabs, Avatar, Tooltip, } from "@material-tailwind/react";
 
 import { useEffect, useState } from "react";
 import AddUser from './AddUser';
 import Edit from "./edituser";
+import { useNavigate } from "react-router-dom";
 const img = require('../images/profile.png')
 const TABLE_HEAD = ["Name", "Email", "Username", "Address", "Action"];
 
 export function Admin() {
+    const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpenedit, setIsModalOpenedit] = useState(false);
+    const [deleteuserstate, setdeleuserstate] = useState(false);
     const [userdata, setUserData] = useState([]);
+    const [search, setSearch] = useState('')
     const [selectedEmail, setSelectedEmail] = useState('');
 
+    const deleteuser = async () => {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:5000/deleteUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${token}`
+            },
+            body: JSON.stringify({
+                email: selectedEmail,
+            }),
+        });
+        if (!response) {
+            throw new Error('Failed to sign in');
+        }
+        const data = await response.json();
+        if (data.user) {
+            toast.success("User Deletion Successfully")
+        }
+        setdeleuserstate(true)
+    }
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:5000/getUser');
+                const token = localStorage.getItem('token');
+                const response = await fetch(`http://localhost:5000/getUser?search=${search}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Failed to fetch user data');
                 }
                 const datas = await response.json();
-                setUserData(datas.data);
+                if (datas.error) {
+                    navigate('/');
+                    return;
+                }
+                else{
+                    setUserData(datas.data);
+                }    
             } catch (error) {
                 console.error(error);
             }
         };
         fetchData();
-    }, [isModalOpen, isModalOpenedit,deleteuser]);
+    }, [isModalOpen, isModalOpenedit, deleteuserstate, search]);
+
     const handleEdit = (email) => {
         setSelectedEmail(email)
         setMenuOpen(prevState => ({
             ...prevState,
-            [email]: !prevState[email] // Toggle the menu state for the clicked row
+            [email]: !prevState[email] 
         }));
     };
     const addUser = () => {
@@ -50,36 +91,19 @@ export function Admin() {
     const closeModaluser = () => {
         setIsModalOpenedit(false);
     };
-    const deleteuser = async (e) => {
-        const response = await fetch('http://localhost:5000/deleteUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: selectedEmail,
-            }),
-        });
-        if (!response) {
-            throw new Error('Failed to sign in');
-        }
-        const data = await response.json();
-        if (data.user) {
-            // toast.success("User Creation Successfull")              
-        }
-        console.log('Delete:', selectedEmail);
-    }
+
     const handleMenuOption = async (option) => {
         if (option === 'edit') {
             editUser()
 
         } else if (option === 'delete') {
-            console.log('Delete:', selectedEmail);
             deleteuser()
+            setdeleuserstate(false)
         }
     }
-
-    setMenuOpen(prevState => ({ ...prevState, [selectedEmail]: false }));
+    const searching = async (e) => {
+        setSearch(e.target.value)
+    }
 
     return (
         <Card className="h-full w-full p-5">
@@ -98,7 +122,10 @@ export function Admin() {
 
                     </Tabs>
                     <div className="w-56 md:w-72">
-                        <Input placeholder="Search" />
+                        <Input placeholder="Search"
+                            value={search}
+                            onChange={searching}
+                            name="search" />
                     </div>
                 </div>
             </CardHeader>
@@ -185,7 +212,7 @@ export function Admin() {
                                                 </button>
                                                 <button
                                                     onClick={() => {
-                                                        const confirmDelete = window.confirm("Are you sure Delete ?");
+                                                        const confirmDelete = window.confirm('Are you sure delete ?');
                                                         if (confirmDelete) {
                                                             handleMenuOption('delete');
                                                         }
@@ -207,6 +234,7 @@ export function Admin() {
             {isModalOpen && <AddUser closeModal={closeModal} />}
 
             {isModalOpenedit && <Edit closeModaluser={closeModaluser} selectedEmail={selectedEmail} />}
+            <ToastContainer />
         </Card>
     );
 }

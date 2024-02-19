@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const navigate=useNavigate()
+  const [username,setUsername]=useState("")
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
   const [eerror,setError]=useState("")
@@ -49,16 +50,24 @@ const Login = () => {
         throw new Error('Failed to sign in');
       }
       const data = await response.json();
-      if (data.success === 'admin') {
-        alert('Admin Login');
-        navigate('/admin')
+      if (data.token) {
+        // Store the token in localStorage
+        localStorage.setItem('token', data.token);
+        if (data.success === 'admin') {
+          alert('Admin Login Success');
+          navigate('/admin')
+        }
+        if (data.success === 'success') {
+          setUsername(data.user)
+          navigate('/home',{ state: { username: data.user } })
+        }
       }
-      if (data.success === 'success') {
-        navigate('/home')
+      else{
+        if (data.error === 'Invalid username') {
+          setError("Invalied Email")
+        } 
       }
-      if (data.error === 'Invalid username') {
-        setError("Invalied Email")
-      } 
+      
     }catch(error){
       alert(error.message)
     }

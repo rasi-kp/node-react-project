@@ -1,4 +1,5 @@
 const bcrypt=require('bcrypt');
+const jwt = require('jsonwebtoken');
 const user=require('../model/user')
 const mongoose = require('mongoose');
 const db = mongoose.connection;
@@ -13,13 +14,14 @@ module.exports={
           else {
             const passwordmatch = await bcrypt.compare(req.body.password, usercheck.password)
             if (passwordmatch) {
+                const token = jwt.sign({ email: usercheck.email}, 'rasi_secret_key', { expiresIn: '1h' });
               if (usercheck.role == 'admin') {
-                return res.json({ success: "admin" });
+                return res.json({token, success: "admin" });
               } else if (usercheck.status == "block") {
-                return res.status(400).json({ error: "Admin blocked" });
+                return res.status(400).json({token, error: "Admin blocked" });
               }
               else
-                return res.json({ success: "success" });
+                return res.json({token, success: "success",user:usercheck.name});
             }
             else {
               return res.status(400).json({ error: "Invalid password" });
@@ -56,12 +58,23 @@ module.exports={
         const result=await user.findOneAndUpdate({email:req.body.data.email},req.body.data)
         return res.status(200).json({ user: "sucess" });
     },
+    deleteUser:async(req,res)=>{
+        console.log(req.body);
+        const result=await user.deleteOne({email:req.body.email})
+        console.log(result);
+        return res.status(200).json({ user: "sucess" });
+    },
     logoutUser:async(req,res)=>{
         console.log(req.body);
         
     },
     getUser:async(req,res)=>{
-        const data=await user.find({})
+        let query = {};
+        if (req.query.search) {
+            const searchRegex = new RegExp(req.query.search, 'i');
+            query = { name: { $regex: searchRegex } };
+        }
+        const data=await user.find(query)
         return res.status(200).json({ data:data });
     },
     getUserid:async(req,res)=>{
