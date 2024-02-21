@@ -1,5 +1,5 @@
 // src/Components/Login.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineTwitter } from "react-icons/ai";
 import { BiLogoFacebook } from "react-icons/bi";
 import { Link } from 'react-router-dom';
@@ -14,6 +14,26 @@ const Login = () => {
   const [password,setPassword]=useState("")
   const [eerror,setError]=useState("")
   const [perror,setPerror]=useState('')
+
+  useEffect(() => {
+    // Check if token exists in local storage or session storage
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      // Token exists, so redirect the user based on their role
+      const userRole = localStorage.getItem('user'); // Assuming you store the user role in local storage
+      console.log(userRole);
+      if (userRole === 'Admin') {
+        navigate('/admin');
+      } else {
+        navigate('/home');
+      }
+    }
+    else{
+      
+    }
+  }, [navigate]);
+
   const handleClick=async (e)=>{
     e.preventDefault()
     setError('');
@@ -53,9 +73,11 @@ const Login = () => {
       if (data.token) {
         // Store the token in localStorage
         localStorage.setItem('token', data.token);
+        localStorage.setItem('user', data.user);
         if (data.success === 'admin') {
+          setUsername(data.user)
           alert('Admin Login Success');
-          navigate('/admin')
+          navigate('/admin',{ state: { username: data.user } })
         }
         if (data.success === 'success') {
           setUsername(data.user)

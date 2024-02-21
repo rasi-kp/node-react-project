@@ -16,7 +16,7 @@ module.exports={
             if (passwordmatch) {
                 const token = jwt.sign({ email: usercheck.email}, 'rasi_secret_key', { expiresIn: '1h' });
               if (usercheck.role == 'admin') {
-                return res.json({token, success: "admin" });
+                return res.json({token, success: "admin" ,user:"Admin"});
               } else if (usercheck.status == "block") {
                 return res.status(400).json({token, error: "Admin blocked" });
               }
@@ -54,19 +54,12 @@ module.exports={
         }
       },
     updateUser:async(req,res)=>{
-        console.log(req.body);
         const result=await user.findOneAndUpdate({email:req.body.data.email},req.body.data)
         return res.status(200).json({ user: "sucess" });
     },
     deleteUser:async(req,res)=>{
-        console.log(req.body);
         const result=await user.deleteOne({email:req.body.email})
-        console.log(result);
         return res.status(200).json({ user: "sucess" });
-    },
-    logoutUser:async(req,res)=>{
-        console.log(req.body);
-        
     },
     getUser:async(req,res)=>{
         let query = {};
