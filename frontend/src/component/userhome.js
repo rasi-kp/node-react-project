@@ -50,12 +50,12 @@ useEffect(() => {
             body.classList.remove('text-gray-900');
             body.classList.add('text-gray-100');
             profile.classList.remove('bg-white');
-            profile.classList.add('bg-gray-900');
+            profile.classList.add('text-white')
         } else {
             toggle.innerHTML = "🌙";
             body.classList.remove('text-gray-100');
             body.classList.add('text-gray-900');
-            profile.classList.remove('bg-gray-900');
+            profile.classList.remove('text-white');
             profile.classList.add('bg-white');
         }
     };
@@ -80,7 +80,7 @@ return (
                     <div className="p-4 md:p-12 text-center lg:text-left ">
                         <div className="block lg:hidden rounded-full shadow-xl mx-auto  h-48 w-48 bg-cover bg-center" style={{ backgroundImage: `url(${rasi})` }}></div>
 
-                        <h1 className="text-3xl font-bold pt-8 lg:pt-0">MUHAMMAD RASI K P</h1>
+                        <h1 id='name1' className="text-3xl font-bold pt-8 lg:pt-0">MUHAMMAD RASI K P</h1>
                         <div className="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"></div>
                         <p className="pt-4 text-base font-bold flex items-center justify-center lg:justify-start"><svg className="h-4 fill-current text-green-700 pr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                             <path d="M9 12H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-8v2H9v-2zm0-1H0V5c0-1.1.9-2 2-2h4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v6h-9V9H9v2zm3-8V2H8v1h4z" /></svg>MERN STACK DEVELOPER</p>

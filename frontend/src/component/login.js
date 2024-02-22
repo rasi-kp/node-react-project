@@ -16,21 +16,17 @@ const Login = () => {
   const [perror,setPerror]=useState('')
 
   useEffect(() => {
-    // Check if token exists in local storage or session storage
     const token = localStorage.getItem('token');
-
     if (token) {
-      // Token exists, so redirect the user based on their role
-      const userRole = localStorage.getItem('user'); // Assuming you store the user role in local storage
-      console.log(userRole);
+      const userRole = localStorage.getItem('user');
       if (userRole === 'Admin') {
-        navigate('/admin');
+        navigate('/admin',{ state: { username: userRole }});
       } else {
-        navigate('/home');
+        navigate('/home',{ state: { username: userRole }});
       }
     }
     else{
-      
+
     }
   }, [navigate]);
 
@@ -39,9 +35,7 @@ const Login = () => {
     setError('');
     setPerror('');
     if (!email.trim()) {
-      
-      toast.success(email + " is empty");
-      toast("sett")
+      toast.error("Email Required");
       setError('Email is required');
       return;
     }
@@ -89,7 +83,6 @@ const Login = () => {
           setError("Invalied Email")
         } 
       }
-      
     }catch(error){
       alert(error.message)
     }
