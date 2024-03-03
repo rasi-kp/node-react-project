@@ -6,9 +6,11 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUser } from "../context/usercontext";
 
 const Login = () => {
   const navigate=useNavigate()
+  const {userRole, user,loginUser } = useUser();
   const [username,setUsername]=useState("")
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
@@ -18,9 +20,8 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const userRole = localStorage.getItem('user');
       if (userRole === 'Admin') {
-        navigate('/admin',{ state: { username: userRole }});
+        navigate('/admin',{ state: { username: userRole }})
       } else {
         navigate('/home',{ state: { username: userRole }});
       }
@@ -65,16 +66,17 @@ const Login = () => {
       }
       const data = await response.json();
       if (data.token) {
-        // Store the token in localStorage
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', data.user);
+        // localStorage.setItem('user', data.user);
         if (data.success === 'admin') {
-          setUsername(data.user)
+          // setUsername(data.user)
+          loginUser(data.user);
           alert('Admin Login Success');
           navigate('/admin',{ state: { username: data.user } })
         }
         if (data.success === 'success') {
           setUsername(data.user)
+          loginUser(data.user);
           navigate('/home',{ state: { username: data.user } })
         }
       }

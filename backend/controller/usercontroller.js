@@ -72,10 +72,13 @@ module.exports={
     },
     getUserid:async(req,res)=>{
         const id=req.params.id
-        const data=await user.findOne({email:id})
+        const data=await user.findOne({email:id},{ _id: 0, email: 1, name: 1, address: 1, dob: 1 })
         return res.status(200).json({ data:data });
     },
     updateProfile:async(req,res)=>{
         console.log(req.body);
     },
+    home:async(req,res)=>{
+      return res.status(200).json({ user: "sucess" });
+    }
 }

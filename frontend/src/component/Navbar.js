@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useUser } from '../context/usercontext'
 
 const navigation = [
   { name: 'Dashboard', href: 'admin', current: true },
@@ -17,10 +18,12 @@ function classNames(...classes) {
 export default function Example() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { logoutUser } = useUser();
   const { username } = location.state || '';
 
   const [name, setName] = useState(username)
   const logout = async () => {
+    logoutUser()
     localStorage.removeItem('token');
     navigate('/');
   }

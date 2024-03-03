@@ -3,7 +3,7 @@ import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Card, CardHeader, Input, Typography, Button, CardBody, CardFooter, Tabs, Avatar, Tooltip, } from "@material-tailwind/react";
+import { Card, CardHeader, Input, Typography, Button, CardBody, CardFooter, Tab, Tabs, Avatar, Tooltip, } from "@material-tailwind/react";
 
 import { useEffect, useState } from "react";
 import AddUser from './AddUser';
@@ -62,9 +62,9 @@ export function Admin() {
                     navigate('/');
                     return;
                 }
-                else{
+                else {
                     setUserData(datas.data);
-                }    
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -76,7 +76,7 @@ export function Admin() {
         setSelectedEmail(email)
         setMenuOpen(prevState => ({
             ...prevState,
-            [email]: !prevState[email] 
+            [email]: !prevState[email]
         }));
     };
     const addUser = () => {
@@ -119,7 +119,7 @@ export function Admin() {
                 </div>
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                     <Tabs value="all" className="w-full md:w-max">
-
+                        <Tab value="all">All</Tab>
                     </Tabs>
                     <div className="w-56 md:w-72">
                         <Input placeholder="Search"
@@ -180,16 +180,20 @@ export function Admin() {
                                     </td>
                                     <td className={classes}>
                                         <div className="flex flex-col">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {username}
-                                            </Typography>
+                                            {username && (
+                                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                                    {username}
+                                                </Typography>
+                                            )}
                                         </div>
                                     </td>
                                     <td className={classes}>
                                         <div className="flex flex-col">
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {address}
-                                            </Typography>
+                                            {address && (
+                                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                                    {address}
+                                                </Typography>
+                                            )}
                                         </div>
                                     </td>
                                     <td className={classes}>
@@ -229,8 +233,6 @@ export function Admin() {
                     </tbody>
                 </table>
             </CardBody>
-            <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-            </CardFooter>
             {isModalOpen && <AddUser closeModal={closeModal} />}
 
             {isModalOpenedit && <Edit closeModaluser={closeModaluser} selectedEmail={selectedEmail} />}

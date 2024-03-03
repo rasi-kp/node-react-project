@@ -28,7 +28,7 @@ function Userhome() {
                 return;
             }
         } catch (error) {
-            console.error(error);
+            console.log(error);
         }
     };
     fetchData();
