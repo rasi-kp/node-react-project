@@ -10,23 +10,8 @@ function App({ closechat }) {
     const [inputMessage, setInputMessage] = useState('');
     const [showModal, setShowModal] = React.useState(true);
 
-    const getmessage = async () => {
-        const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/message', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${token}`
-            },
-        });
-        if (!response) {
-            throw new Error('Failed to sign in');
-        }
-        const data = await response.json();
-        console.log(data.messages);
-        setMessages([...messages, data.messages]);
-    }
     const insertmessage = async () => {
+        setMessages([...messages, inputMessage]);
         const token = localStorage.getItem('token');
         const response = await fetch('http://localhost:5000/message', {
             method: 'POST',
@@ -48,12 +33,9 @@ function App({ closechat }) {
         socket.emit("message", inputMessage);
         setInputMessage('');
     };
-    useEffect(async () => {
-        const fetchData = async () => {
-            console.log("useeffect selected");
-            socket.on("message", (data) => {
-                console.log(data);
-            });
+    useEffect(() => {
+        console.log("useeffect selected");
+        const fetchdata = async () => {
             const token = localStorage.getItem('token');
             const response = await fetch('http://localhost:5000/message', {
                 method: 'GET',
@@ -62,15 +44,18 @@ function App({ closechat }) {
                     'Authorization': `${token}`
                 },
             });
-            if (!response.ok) {
-                throw new Error('Failed to fetch messages');
+            if (!response) {
+                throw new Error('Failed to sign in');
             }
             const data = await response.json();
             console.log(data.messages);
-            setMessages([...messages, ...data.messages]);
-            console.log("useeffect finish");
-        };
-        fetchData()
+            // setMessages([...messages, data.messages]);
+            setMessages([...messages, ...data.messages.map(message => message.content)]);
+        }
+        socket.on("message", (data) => {
+        });
+        fetchdata()
+        console.log("useeffect finish");
     }, []);
 
     return (
