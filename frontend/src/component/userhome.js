@@ -113,7 +113,7 @@ return (
                     <img src={rasi} className="rounded-none lg:rounded-lg shadow-2xl hidden lg:block" style={{ height: '600px' }} />
 
                 </div>
-                <div className="absolute top-10 right-0 h-12 w-18 p-10">
+                <div className="absolute top-10  h-12 w-18 p-10">
                     <button className="js-change-theme focus:outline-none">🌙</button>
                 </div>
 

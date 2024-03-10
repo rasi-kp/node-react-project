@@ -83,7 +83,10 @@ const Login = () => {
       else{
         if (data.error === 'Invalid username') {
           setError("Invalied Email")
-        } 
+        }
+        else {
+          setPerror("Invalied Password")
+        }
       }
     }catch(error){
       alert(error.message)

@@ -4,6 +4,8 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useUser } from '../context/usercontext'
 
+import Chat from './Chat'
+
 const navigation = [
   { name: 'Dashboard', href: 'admin', current: true },
   { name: 'Team', href: '#', current: false },
@@ -22,10 +24,21 @@ export default function Example() {
   const { username } = location.state || '';
 
   const [name, setName] = useState(username)
+  const [chat, setchat] = useState(false)
+  const closechatModel = () => {
+    setchat(false);
+};
   const logout = async () => {
     logoutUser()
     localStorage.removeItem('token');
     navigate('/');
+  }
+  const socket=async()=>{
+    if(!name){
+      navigate('/login')
+    }else{
+      setchat(true)
+    }
   }
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -57,10 +70,10 @@ export default function Example() {
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {name && <p className='text-gray-300 hover:text-white px-3 py-2 text-sm font-medium'>Hi {name}</p>}
+
                 <button
-                  type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
+                  type="button" onClick={socket}
+                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -125,8 +138,7 @@ export default function Example() {
                           <Menu.Item>
                             {({ active }) => (
                               <a
-                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                              >
+                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                                 Sign in
                               </a>
                             )}
@@ -139,27 +151,11 @@ export default function Example() {
               </div>
             </div>
           </div>
-
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  className={classNames(
-                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
-                  )}
-                  aria-current={item.current ? 'page' : undefined}
-                >
-                  {item.name}
-                </Disclosure.Button>
-              ))}
-            </div>
-          </Disclosure.Panel>
+          {chat && <Chat closechat={closechatModel}/>}
         </>
       )}
+      
     </Disclosure>
+    
   )
 }
