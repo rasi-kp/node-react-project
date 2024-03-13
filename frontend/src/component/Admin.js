@@ -112,7 +112,7 @@ export function Admin() {
                     <div>
                     </div>
                     <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                        <Button className="flex items-center gap-3" size="sm" onClick={addUser}>
+                        <Button className="flex items-center gap-3 text-wrap" size="sm" onClick={addUser}>
                             <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add User
                         </Button>
                     </div>
