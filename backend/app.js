@@ -42,7 +42,6 @@ io.on("connection", (socket) => {
     await msgcontoller.message(data)
     // const newMessage = new Messagemodel(data);
     // await newMessage.save();
-    // Broadcast the message to all connected clients
     io.emit('message', data);
   });
 
